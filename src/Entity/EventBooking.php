@@ -31,6 +31,9 @@ class EventBooking
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Amount = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $Email = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +107,18 @@ class EventBooking
     public function setAmount(?string $Amount): static
     {
         $this->Amount = $Amount;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->Email;
+    }
+
+    public function setEmail(?string $Email): static
+    {
+        $this->Email = $Email;
 
         return $this;
     }
