@@ -37,10 +37,10 @@ class EventBooking
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $FunctionDate = null;
-
+    private $date;
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $FunctionTime = null;
-
+    private $time;
     public function getId(): ?int
     {
         return $this->id;
@@ -150,6 +150,30 @@ class EventBooking
     public function setFunctionTime(?\DateTimeInterface $FunctionTime): static
     {
         $this->FunctionTime = $FunctionTime;
+
+        return $this;
+    }
+
+    public function getfunctiondatestr(): ?string
+    {
+        return $this->date;
+    }
+
+    public function setfunctiondatestr(?string $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getfunctiontimestr(): ?string
+    {
+        return $this->time;
+    }
+
+    public function setfunctiontimestr(?string $time): static
+    {
+        $this->time = $time;
 
         return $this;
     }

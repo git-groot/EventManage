@@ -8,6 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use DateTime;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 class EventServices
 {
@@ -34,8 +37,11 @@ class EventServices
         $book->setFunctionName($data->getFunctionName());
         $book->setFunctionLocation($data->getFunctionLocation());
         $book->setAmount($data->getAmount());
-        $book->setFunctionDate($data->getFunctionDate());
-        $book->setFunctionTime($data->getFunctionTime());
+
+        $fundate = new \DateTime($data->getfunctiondatestr());
+        $book->setFunctionDate($fundate);
+        $funtime =($data->getfunctiontimestr());
+        $book->setFunctionTime($funtime);
 
         $this->EM->persist($book);
         $this->EM->flush();
@@ -48,7 +54,6 @@ class EventServices
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
         $content = $request->getContent();
-        // dd();
         $data = $serializer->deserialize($content, EventBooking::class, 'json');
 
         $bookrepo = $this->EM->getRepository(EventBooking::class);
@@ -85,13 +90,19 @@ class EventServices
         if ($email) {
             $bookingupd->setEmail($email);
         }
-        $date = $data->getFunctionDate('FunctionDate');
-        if ($date) {
-            $bookingupd->setFunctionDate($date);
+        $datestr = $data->getfunctiondatestr();
+        if ($datestr) {
+            $date = new DateTime($datestr);
+            if ($date) {
+                $bookingupd->setFunctionDate($date);
+            }
         }
-        $time = $data->getFunctionTime('FunctionTime');
-        if ($time) {
-            $bookingupd->setFunctionTime($time);
+        $timestr = $data->getfunctiontimestr();
+        if ($timestr) {
+            $time = new DateTime($timestr);
+            if ($time) {
+                $bookingupd->setFunctionTime($time);
+            }
         }
         $this->EM->persist($bookingupd);
         $this->EM->flush();
@@ -141,8 +152,14 @@ class EventServices
         $content = $request->getContent();
         $data = $serializer->deserialize($content, EventBookingList::class, 'json');
 
+        $listrepo = $this->EM->getRepository(EventBooking::class);
+        $bookingid = $listrepo->findOneBy(['id' => $data->getEventsbookid()]);
+        if ($bookingid == null) {
+            return 'invalide booking id';
+        }
+
         $list = new EventBookingList;
-        $list->setEvenetBookin($data->getEventsbookid());
+        $list->setEvenetBookin($bookingid);
         $list->setEvents($data->getEvents());
         $list->setCount($data->getCount());
 
@@ -157,34 +174,55 @@ class EventServices
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
         $content = $request->getContent();
-        // dd();
         $data = $serializer->deserialize($content, EventBookingList::class, 'json');
 
-       
-        $this->EM->persist($bookingupd);
+        $listrepo = $this->EM->getRepository(EventBookingList::class);
+        $updatelist = $listrepo->findOneBy(['id' => $id]);
+        if ($updatelist == null) {
+            return 'invalide evenlist id';
+        }
+
+        $events = $data->getEvents('Events');
+        if ($events) {
+            $updatelist->setEvents($events);
+        }
+
+        $count = $data->getCount('Count');
+        if ($count) {
+            $updatelist->setCount($count);
+        }
+        $eventbook = $data->getEventsbookid();
+        if ($eventbook) {
+            $bookinid = $this->EM->getRepository(EventBooking::class)->find($eventbook);
+            if ($bookinid) {
+                $updatelist->setEvenetBookin($bookinid);
+            }
+        }
+
+        $this->EM->persist($updatelist);
         $this->EM->flush();
-        return $bookingupd;
+        return $updatelist;
     }
-    //getsingle
+    // getsingle
     public function getsinglebookeventlist($id)
     {
 
         $bookrepo = $this->EM->getRepository(EventBookingList::class);
         $eventbookid = $bookrepo->findOneBy(['id' => $id]);
         if ($eventbookid == null) {
-            return 'invalide booking id';
+            return 'invalide bookinglistid id';
         }
         return $eventbookid;
     }
-    // getall
+    // // getall
     public function getallbookeventlist()
     {
 
-        $bookrepo = $this->EM->getRepository(EventBooking::class);
+        $bookrepo = $this->EM->getRepository(EventBookingList::class);
         $allbooking = $bookrepo->findAll();
         return $allbooking;
     }
-    // delete
+    // // delete
     public function deletebookeventlist($id)
     {
 

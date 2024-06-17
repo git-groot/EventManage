@@ -76,4 +76,25 @@ class EventController extends AbstractController
         }
         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "inInitialized_", "password"]);
     }
-}
+     // getSingle
+     #[Route("/api/getsingle/bookeventlist/{id}", name: "getsinglebookeventlist", methods: "GET")]
+     public function getsinglebookeventlist($id, EventServices $eventServices)
+     {
+         $result = $eventServices->getsinglebookeventlist($id);
+         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
+     }
+    //  getAll
+     #[Route("/api/getall/bookinglist", name: "getallbookeventlist", methods: "GET")]
+     public function getallbookeventlist( EventServices $eventServices)
+     {
+         $result = $eventServices->getallbookeventlist();
+         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
+     }
+    // delete
+    #[Route("/api/delete/bookeventlist/{id}", name: "deletebookeventlist", methods: "GET")]
+    public function deletebookeventlist($id, EventServices $eventServices)
+    {
+        $result = $eventServices->deletebookeventlist($id);
+        return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
+    }
+  }
