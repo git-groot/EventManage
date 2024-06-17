@@ -15,12 +15,14 @@ class EventBookingList
 
     #[ORM\ManyToOne]
     private ?EventBooking $EvenetBookin = null;
-
+    
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Events = null;
-
+    
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Count = null;
+    
+    private $Eventsbookid;
 
     public function getId(): ?int
     {
@@ -38,6 +40,18 @@ class EventBookingList
 
         return $this;
     }
+    public function getEventsbookid(): ?string
+    {
+        return $this->Eventsbookid;
+    }
+
+    public function setEventsbookid(?string $Eventsbookid): static
+    {
+        $this->Eventsbookid = $Eventsbookid;
+
+        return $this;
+    }
+
 
     public function getEvents(): ?string
     {

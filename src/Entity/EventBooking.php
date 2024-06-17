@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\EventBookingRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EventBookingRepository::class)]
@@ -33,6 +34,12 @@ class EventBooking
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Email = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $FunctionDate = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $FunctionTime = null;
 
     public function getId(): ?int
     {
@@ -119,6 +126,30 @@ class EventBooking
     public function setEmail(?string $Email): static
     {
         $this->Email = $Email;
+
+        return $this;
+    }
+
+    public function getFunctionDate(): ?\DateTimeInterface
+    {
+        return $this->FunctionDate;
+    }
+
+    public function setFunctionDate(?\DateTimeInterface $FunctionDate): static
+    {
+        $this->FunctionDate = $FunctionDate;
+
+        return $this;
+    }
+
+    public function getFunctionTime(): ?\DateTimeInterface
+    {
+        return $this->FunctionTime;
+    }
+
+    public function setFunctionTime(?\DateTimeInterface $FunctionTime): static
+    {
+        $this->FunctionTime = $FunctionTime;
 
         return $this;
     }

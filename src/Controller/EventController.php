@@ -45,11 +45,35 @@ class EventController extends AbstractController
     }
     // getall
     #[Route("/api/getall/booking", name: "getallbookevent", methods: "GET")]
-    public function getallbookevent(Request $request, EventServices $eventServices)
+    public function getallbookevent(     EventServices $eventServices)
     {
         $result = $eventServices->getallbookevent();
         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
     }
-    // post
-    
+    //delet
+    #[Route("/api/delete/bookevent/{id}", name: "deletebookevent", methods: "GET")]
+    public function deletebookevent($id, EventServices $eventServices)
+    {
+        $result = $eventServices->deletebookevent($id);
+        return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
+    }
+    //post bookinglist
+    #[Route("/api/bookeventlist", name: "bookeventlist", methods: "POST")]
+    public function bookeventlist(Request $request, EventServices $eventServices)
+    {
+        $result = $eventServices->bookeventlist($request);
+        return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
+    }
+    // update booking list
+
+    #[Route("/api/update/evenbooklist/{id}", name: "updateevenbooklist", methods: "POST")]
+    public function updateEvenlist(Request $request, $id, EventServices $eventServices)
+    {
+
+        $result = $eventServices->updateEvenlist($request, $id);
+        if ($result == null) {
+            return new ApiResponse([], 400, ["Content-Type" => "application/json"], 'json', $result, ['timezone']);
+        }
+        return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "inInitialized_", "password"]);
+    }
 }
