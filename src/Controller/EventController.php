@@ -65,7 +65,6 @@ class EventController extends AbstractController
         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
     }
     // update booking list
-
     #[Route("/api/update/evenbooklist/{id}", name: "updateevenbooklist", methods: "POST")]
     public function updateEvenlist(Request $request, $id, EventServices $eventServices)
     {
@@ -97,4 +96,43 @@ class EventController extends AbstractController
         $result = $eventServices->deletebookeventlist($id);
         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
     }
+    // post listes
+    #[Route("/api/listofevents", name: "listofevents", methods: "POST")]
+    public function listofevents(Request $request, EventServices $eventServices)
+    {
+        $result = $eventServices->listofevents($request);
+        return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
+    }
+    //update
+    #[Route("/api/update/listofevents/{id}", name: "updstelistofevents", methods: "POST")]
+    public function updatlistofevets(Request $request, $id, EventServices $eventServices)
+    {
+
+        $result = $eventServices->updatlistofevets($request, $id);
+        if ($result == null) {
+            return new ApiResponse([], 400, ["Content-Type" => "application/json"], 'json', $result, ['timezone']);
+        }
+        return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "inInitialized_", "password"]);
+    }
+    //getsingle
+    #[Route("/api/getsingle/listofevent/{id}", name: "listofevents", methods: "GET")]
+     public function getsinglelistofevents($id, EventServices $eventServices)
+     {
+         $result = $eventServices->getsinglelistofevents($id);
+         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
+     }
+     //getall
+     #[Route("/api/getall/listofevents", name: "getalllistofevents", methods: "GET")]
+     public function getalllistofevents( EventServices $eventServices)
+     {
+         $result = $eventServices->getalllistofevents();
+         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
+     }
+     //delete
+     #[Route("/api/delete/listofevents/{id}", name: "listofevents", methods: "GET")]
+     public function deletelistofevents($id, EventServices $eventServices)
+     {
+         $result = $eventServices->deletelistofevents($id);
+         return new ApiResponse($result, 200, ["Content-Type" => "application/json"], 'json', "Success", ['timezone', "_initializer", "cloner", "isInitialized_", "password"]);
+     }
   }

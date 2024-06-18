@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\Entity\EventBooking;
 use App\Entity\EventBookingList;
+use App\Entity\ListofEvents;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use DateTime;
+use phpDocumentor\Reflection\Types\This;
+use PhpParser\Node\Expr\List_;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\VarDumper\Cloner\Data;
 
@@ -40,7 +43,7 @@ class EventServices
 
         $fundate = new \DateTime($data->getfunctiondatestr());
         $book->setFunctionDate($fundate);
-        $funtime =($data->getfunctiontimestr());
+        $funtime = ($data->getfunctiontimestr());
         $book->setFunctionTime($funtime);
 
         $this->EM->persist($book);
@@ -235,5 +238,79 @@ class EventServices
         $this->EM->remove($dele);
         $this->EM->flush();
         return 'delete successfully';
+    }
+    //postlistofevents
+    public function listofevents($request)
+    {
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+        $content = $request->getContent();
+        $data = $serializer->deserialize($content, ListofEvents::class, 'json');
+
+        $list = new ListofEvents;
+        $list->setEvents($data->getEvents());
+        $list->setCounts($data->getCounts());
+        $this->EM->persist($list);
+        $this->EM->flush();
+        return $list;
+    }
+    //update
+    public function updatlistofevets($request, $id)
+    {
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+        $content = $request->getContent();
+        $data = $serializer->deserialize($content, ListofEvents::class, 'json');
+
+        $listsrepo = $this->EM->getRepository(ListofEvents::class);
+        $updlist = $listsrepo->findOneBy(['id' => $id]);
+        if ($updlist == null) {
+            return 'invalide lists id';
+        }
+
+        $events = $data->getEvents('Events');
+        if ($events) {
+            $updlist->setEvents($events);
+        }
+
+        $count = $data->getCounts('Counts');
+        if ($count) {
+            $updlist->setCounts($count);
+        }
+        $this->EM->persist($updlist);
+        $this->EM->flush();
+        return $updlist;
+    }
+    //getsingle
+    public function getsinglelistofevents($id)
+    {
+        $listsrepo = $this->EM->getRepository(ListofEvents::class);
+        $getlist = $listsrepo->findOneBy(['id' => $id]);
+        if ($getlist == null) {
+            return 'invalide list id';
+        }
+        return $getlist;
+    }
+    //getall
+    public function getalllistofevents()
+    {
+
+        $listsrepo = $this->EM->getRepository(ListofEvents::class);
+        $getlist = $listsrepo->findAll();
+        return $getlist;
+    }
+    //delete
+    public function deletelistofevents($id)
+    {
+        $listsrepo = $this->EM->getRepository(ListofEvents::class);
+        $getlist = $listsrepo->findOneBy(['id' => $id]);
+        if ($getlist == null) {
+            return 'invalide list id';
+        }
+        $this->EM->remove($getlist);
+        $this->EM->flush();
+        return 'Delete sucussfully';
     }
 }
